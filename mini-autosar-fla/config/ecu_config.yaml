@@ -1,0 +1,62 @@
+# ============================================================
+# ecu_config.yaml – Mini-AUTOSAR FLA ECU Configuration
+# ============================================================
+# This file is the SINGLE SOURCE OF TRUTH for pin assignments.
+# After editing, run:  python3 scripts/gen_config.py
+# to regenerate Dio_Cfg.h and Rte_Cfg.h automatically.
+# Application SWC code does NOT change when pins move.
+# ============================================================
+
+ecu:
+  name: "MiniAutosarDemo_ECU"
+  version: "1.0.0"
+
+# ── GPIO Channel Definitions ────────────────────────────────
+# channel: physical MCAL channel index (0–7 in this mock)
+# direction: INPUT | OUTPUT
+dio_channels:
+  - name: BUTTON_0
+    channel: 0
+    direction: INPUT
+    description: "Main user button (active HIGH)"
+
+  - name: BUTTON_1
+    channel: 1
+    direction: INPUT
+    description: "Secondary user button (active HIGH)"
+
+  - name: LED_STATUS
+    channel: 2
+    direction: OUTPUT
+    description: "Status LED – on when any button active"
+
+  - name: LED_BLINK
+    channel: 3
+    direction: OUTPUT
+    description: "Blink LED – pattern controlled by BlinkController"
+
+  - name: LED_HEARTBEAT
+    channel: 4
+    direction: OUTPUT
+    description: "Heartbeat LED – toggles every 500ms independently"
+
+# ── RTE Port Mapping ────────────────────────────────────────
+# Maps symbolic SWC port names to DIO channel names above.
+# Change channel assignment here; SWC code stays unchanged.
+rte_ports:
+  ButtonReader:
+    Button0: BUTTON_0
+    Button1: BUTTON_1
+
+  BlinkController:
+    LedStatus:  LED_STATUS
+    LedBlink:   LED_BLINK
+
+  Heartbeat:
+    LedHb:      LED_HEARTBEAT
+
+# ── Scheduler Timing (milliseconds) ─────────────────────────
+scheduler:
+  ButtonReader_period_ms:   10
+  BlinkController_period_ms: 10
+  Heartbeat_period_ms:      500
